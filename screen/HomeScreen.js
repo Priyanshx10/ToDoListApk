@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
-import { IconButton, List } from 'react-native-paper';
+import { Checkbox, IconButton, List } from 'react-native-paper';
 
 const HomeScreen = () => {
   const [task, setTask] = useState('');
@@ -8,7 +8,7 @@ const HomeScreen = () => {
 
   const addTask = () => {
     if (task.trim() !== '') {
-      setTasks([...tasks, task]);
+      setTasks([...tasks, { text: task, completed: false }]);
       setTask('');
     }
   };
@@ -16,6 +16,12 @@ const HomeScreen = () => {
   const deleteTask = (index) => {
     const newTasks = [...tasks];
     newTasks.splice(index, 1);
+    setTasks(newTasks);
+  };
+
+  const toggleTaskCompletion = (index) => {
+    const newTasks = [...tasks];
+    newTasks[index].completed = !newTasks[index].completed;
     setTasks(newTasks);
   };
 
@@ -36,7 +42,13 @@ const HomeScreen = () => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
           <List.Item
-            title={item}
+            title={item.text}
+            left={() => (
+              <Checkbox
+                status={item.completed ? 'checked' : 'unchecked'}
+                onPress={() => toggleTaskCompletion(index)}
+              />
+            )}
             right={() => (
               <IconButton
                 icon="delete"
